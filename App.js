@@ -1,3 +1,6 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+
 const head2 = React.createElement("h3", { id: "heading" }, "Hello from React");
 console.log(head2);
 
