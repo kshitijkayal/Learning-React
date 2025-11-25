@@ -1,18 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-const head2 = React.createElement("h3", { id: "heading" }, "Hello from React");
-console.log(head2);
+const Title = () => (
+  <h1 id="title" key="h2">
+    Namaste React
+  </h1>
+);
 
-const parent = React.createElement("div", { id: "parent" }, [
-  React.createElement("div", { id: "child1" }, [
-    React.createElement("h1", {}, "I am h1 tag inside child 1 div"),
-    React.createElement("h2", {}, "I am h2 tag inside child 1 div"),
-  ]),
-  React.createElement("div", { id: "child2" }, [
-    React.createElement("h1", {}, "I am h1 tag inside child 2 div"),
-    React.createElement("h2", {}, "I am h2 tag inside child 2 div"),
-  ]),
-]);
+// Composing Comopnentss
+const HeaderComponent = () => {
+  return (
+    <div>
+      <Title />
+      <h2>Namaste React functional component</h2>
+      <h2>This is a h2 tage</h2>
+    </div>
+  );
+};
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(parent);
+root.render(<HeaderComponent/>);
