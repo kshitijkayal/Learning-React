@@ -3,26 +3,28 @@
   "version": "1.0.0",
   "description": "Learning React",
   "scripts": {
-    "test": "jest",
     "start": "parcel index.html",
-    "build": "parcel build index.html"
+    "build": "parcel build index.html",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "(https://github.com/kshitijkayal/Learning-React)"
+    "url": "https://github.com/kshitijkayal/Learning-React"
   },
   "author": "Kshitij Kayal",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "babel-plugin-transform-remove-console": "^6.9.4",
-    "parcel": "^2.16.1"
+    "parcel": "^2.16.1",
+    "process": "^0.11.10"
   },
   "dependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router": "^7.10.1"
   },
   "browserslist": [
-    "last 2 versions"
+    "last 10 Chrome versions"
   ]
 }
