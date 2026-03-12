@@ -1,17 +1,22 @@
 import { CDN_URL } from "../utils/constants";
 
 const RestrauntCard = ({
-  name,
-  cuisines,
-  cloudinaryImageId,
-  lastMileTravelString,
+  info: {
+    name,
+    image: { url },
+    rating: { aggregate_rating },
+    cuisine,
+  },
+  order: { deliveryTime },
 }) => {
+  const cuisineNames = cuisine ? cuisine.map((c) => c.name).join(", ") : "";
   return (
     <div className="card">
-      <img src={{ CDN_URL } + cloudinaryImageId} />
+      <img src={url} />
       <h2>{name}</h2>
-      <h3>{cuisines.join(", ")}</h3>
-      <h4>{lastMileTravelString} minutes</h4>
+      <h3>{cuisineNames}</h3>
+      <h4>{deliveryTime}</h4>
+      <p>Rating: {aggregate_rating}</p>
     </div>
   );
 };
