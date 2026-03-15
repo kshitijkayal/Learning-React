@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const User = (props) => {
   const [count, setCount] = React.useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log("Interval");
+    }, 1000);
+
+    // Clean up function to clear the interval when the component is unmounted
+    return () => {
+      console.log("Component Unmounted");
+      clearInterval(timer);
+    };
+  });
   return (
     <div className="user-card">
       <h1>Count : {count}</h1>
