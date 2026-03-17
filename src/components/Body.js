@@ -3,10 +3,12 @@ import { FETCH_RESTAURANT_URL } from "../utils/constants";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router";
 import RestaurantCard from "./RestrauntCard";
+import useOnlineStatus from "../utils/useOnlineStatus";
+import useRestaurantList from "../utils/useRestaurantList";
 
 function filterData(searchText, restaurants) {
   const filterData = restaurants.filter((restaurant) =>
-    restaurant?.info?.name?.toLowerCase()?.includes(searchText.toLowerCase())
+    restaurant?.info?.name?.toLowerCase()?.includes(searchText.toLowerCase()),
   );
 
   return filterData;
@@ -17,6 +19,10 @@ const Body = () => {
   const [listOfRestaurants, setlistOfRestaurants] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const onlineStatus = useOnlineStatus();
+  const fetchRestaurantList = useRestaurantList();
+
+  
 
   useEffect(() => {
     fetchData();
@@ -32,6 +38,10 @@ const Body = () => {
   };
   // not render component (Early return)
   if (!listOfRestaurants) return null;
+
+  if (!onlineStatus) {
+    return <h1>🔴 You are offline, please check your internet connection!</h1>;
+  }
 
   return listOfRestaurants?.length === 0 ? (
     <Shimmer />
@@ -63,7 +73,7 @@ const Body = () => {
           className="filter-btn"
           onClick={() => {
             const filteredList = listOfRestaurants.filter(
-              (res) => res.info?.rating?.aggregate_rating > 4
+              (res) => res.info?.rating?.aggregate_rating > 4,
             );
             setFilteredRestaurants(filteredList);
           }}
