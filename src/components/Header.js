@@ -1,15 +1,17 @@
 import { Link } from "react-router";
 import Title from "./Title";
 import useOnlineStatus from "../utils/useOnlineStatus";
-
+import UserContext from "../utils/UserContext";
+import { useContext } from "react";
 // Composing Comopnentss
 const Header = () => {
   const onlineStatus = useOnlineStatus();
+  const { loggedInUser } = useContext(UserContext);
   return (
-    <div className="header">
+    <div className="header flex justify-between bg-pink-50 shadow-lg p-4">
       <Title />
-      <div className="nav-items">
-        <ul>
+      <div className="nav-items flex items-center m-4 p-4">
+        <ul className="flex space-x-4">
           <li>Online Status: {onlineStatus ? "✅" : "❌"}</li>
           <li>
             <Link to="/">Home</Link>
@@ -26,6 +28,7 @@ const Header = () => {
           <li>
             <Link to="/cart">Cart</Link>
           </li>
+          <li>{loggedInUser}</li>
         </ul>
       </div>
     </div>

@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { FETCH_RESTAURANT_URL } from "../utils/constants";
+import { useState } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router";
-import RestaurantCard from "./RestrauntCard";
+import RestaurantCard, { withPromotedLabel } from "./RestrauntCard";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import useRestaurantList from "../utils/useRestaurantList";
+import UserContext from "../utils/UserContext";
+import { useContext } from "react";
 
 function filterData(searchText, restaurants) {
   const filterData = restaurants.filter((restaurant) =>
@@ -16,48 +17,53 @@ function filterData(searchText, restaurants) {
 
 // no key (not acceptable)<<<<<<<<<<< index key(last option) <<<<< unquie key (best practice)
 const Body = () => {
-  const [listOfRestaurants, setlistOfRestaurants] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const onlineStatus = useOnlineStatus();
-  const fetchRestaurantList = useRestaurantList();
+  const {
+    listOfRestaurants,
+    filteredRestaurants,
+    setFilteredRestaurants,
+    isLoading,
+    error,
+  } = useRestaurantList();
 
-  
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    // API Call
-    const data = await fetch(FETCH_RESTAURANT_URL);
-    const json = await data.json();
-    console.log(json.page_data?.sections?.SECTION_SEARCH_RESULT);
-    setlistOfRestaurants(json.page_data?.sections?.SECTION_SEARCH_RESULT);
-    setFilteredRestaurants(json.page_data?.sections?.SECTION_SEARCH_RESULT);
-  };
+  const RestaurantCardPromoted = withPromotedLabel(RestaurantCard);
+  const { userName, setUserName } = useContext(UserContext);
   // not render component (Early return)
-  if (!listOfRestaurants) return null;
-
   if (!onlineStatus) {
     return <h1>🔴 You are offline, please check your internet connection!</h1>;
   }
 
-  return listOfRestaurants?.length === 0 ? (
-    <Shimmer />
-  ) : (
+  if (isLoading) {
+    return <Shimmer />;
+  }
+
+  if (listOfRestaurants?.length === 0) {
+    return (
+      <div className="no-restaurants">
+        <h2>No restaurants found</h2>
+        <p>Try adjusting your search or check back later!</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="error">Something went wrong. Please try again.</div>;
+  }
+
+  return (
     <div className="body">
-      <div className="search-container">
+      <div className="search m-4 p-4">
         <input
           type="text"
-          className="search-input"
+          className="search-input border border-solid border-gray-300 p-2 rounded"
           placeholder="Search for restaurants..."
           onChange={(e) => {
             setSearchText(e.target.value);
           }}
         />
         <button
-          className="search-btn"
+          className="search-btn bg-blue-500 text-white p-2 rounded ml-2"
           onClick={() => {
             //need to filter the data
             const data = filterData(searchText, listOfRestaurants);
@@ -68,9 +74,9 @@ const Body = () => {
           Search
         </button>
       </div>
-      <div className="filter">
+      <div className="filter m-4 p-4">
         <button
-          className="filter-btn"
+          className="filter-btn bg-green-200 text-white p-2 rounded ml-2"
           onClick={() => {
             const filteredList = listOfRestaurants.filter(
               (res) => res.info?.rating?.aggregate_rating > 4,
@@ -81,14 +87,32 @@ const Body = () => {
           Top Rated Restaurants
         </button>
       </div>
-      <div className="restaurant-list">
+      <div>
+        <label> UserName: </label>
+        <input
+          type="text"
+          className="user-input border border-solid border-gray-300 p-2 rounded"
+          placeholder="Enter logged in user..."
+          value={userName}
+          onChange={(e) => {
+            setUserName(e.target.value);
+          }}
+        />
+      </div>
+
+      <div className="restaurant-list flex flex-wrap">
         {filteredRestaurants.map((restaurant) => {
           return (
             <Link
               to={"/restaurant" + restaurant.order.actionInfo.clickUrl}
               key={restaurant.info.resId}
             >
-              <RestaurantCard {...restaurant} />
+              {/* if the Restaarant is promoted then add promoted tag */}
+              {restaurant.info?.isPromoted ? (
+                <RestaurantCardPromoted {...restaurant} />
+              ) : (
+                <RestaurantCard {...restaurant} />
+              )}
             </Link>
           );
         })}
