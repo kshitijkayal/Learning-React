@@ -12,6 +12,9 @@ import AboutClass from "./components/AboutClass";
 import Shimmer from "./components/Shimmer";
 import UserContext from "./utils/UserContext";
 import User from "./components/User";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+import Cart from "./components/Cart";
 
 {
   /*
@@ -34,15 +37,17 @@ const AppLayout = () => {
     setUserName(data.name);
   }, []);
   return (
-    <UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
-      <div className="app">
-        {/* <UserContext.Provider value={{ loggedInUser: "Elon Musk" }}> */}
+    <Provider store={appStore}>
+      <UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
+        <div className="app">
+          {/* <UserContext.Provider value={{ loggedInUser: "Elon Musk" }}> */}
           <Header />
-        {/* </UserContext.Provider> */}
-        <Outlet />
-        <Footer />
-      </div>
-    </UserContext.Provider>
+          {/* </UserContext.Provider> */}
+          <Outlet />
+          <Footer />
+        </div>
+      </UserContext.Provider>
+    </Provider>
   );
 };
 
@@ -54,6 +59,7 @@ const appRouter = createBrowserRouter([
     children: [
       { path: "/about", element: <AboutClass /> },
       { path: "/contact", element: <Contact /> },
+      { path: "/cart", element: <Cart /> },
       { path: "/", element: <Body /> },
       {
         path: "/grocery",
